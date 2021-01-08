@@ -47,7 +47,13 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
 
         ((App) getApplication()).getComponent().inject(this);
 
-
+        resultList = new ArrayList<>();
+        movieAdapter = new MovieAdapter(resultList);
+        mRecyclerView.setAdapter(movieAdapter);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
