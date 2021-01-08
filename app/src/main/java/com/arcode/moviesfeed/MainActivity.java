@@ -1,15 +1,21 @@
 package com.arcode.moviesfeed;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.arcode.moviesfeed.movies.MovieAdapter;
 import com.arcode.moviesfeed.movies.MoviesMVP;
 import com.arcode.moviesfeed.movies.ViewModel;
 import com.arcode.moviesfeed.root.App;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -26,14 +32,11 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
     @BindView(R.id.rv_movies)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.tv_fragment_title)
-    TextView tvTitle;
-
-    @BindView(R.id.tv_fragment_country)
-    TextView tvCountry;
-
     @Inject
     MoviesMVP.Presenter presenter;
+
+    private MovieAdapter movieAdapter;
+    private List<ViewModel> resultList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
         ButterKnife.bind(this);
 
         ((App) getApplication()).getComponent().inject(this);
+
+
 
     }
 
