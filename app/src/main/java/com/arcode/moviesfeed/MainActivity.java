@@ -1,6 +1,7 @@
 package com.arcode.moviesfeed;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.arcode.moviesfeed.movies.MovieAdapter;
 import com.arcode.moviesfeed.movies.MoviesMVP;
 import com.arcode.moviesfeed.movies.ViewModel;
 import com.arcode.moviesfeed.root.App;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
     private final String TAG = MainActivity.class.getName();
 
     @BindView(R.id.activity_root_view)
-    ViewGroup viewGroup;
+    ViewGroup rootView;
 
     @BindView(R.id.rv_movies)
     RecyclerView mRecyclerView;
@@ -59,12 +61,14 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
 
     @Override
     public void updateData(ViewModel viewModel) {
-
+        resultList.add(viewModel);
+        movieAdapter.notifyItemChanged(resultList.size() - 1);
+        Log.d(TAG, "Información nueva: " + viewModel.getTitle());
     }
 
     @Override
     public void showSnackBar(String message) {
-
+        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -72,5 +76,13 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
         super.onResume();
         presenter.setView(this);
         presenter.loadData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.rxJavaUnsuscribe();
+        resultList.clear();
+        movieAdapter.notifyDataSetChanged();
     }
 }
