@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
     @Override
     public void updateData(ViewModel viewModel) {
         resultList.add(viewModel);
-        movieAdapter.notifyItemChanged(resultList.size() - 1);
+        movieAdapter.notifyItemInserted(resultList.size() - 1);
         Log.d(TAG, "Información nueva: " + viewModel.getTitle());
     }
 

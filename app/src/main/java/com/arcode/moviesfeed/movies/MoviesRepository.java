@@ -72,7 +72,13 @@ public class MoviesRepository implements Repository {
     public Observable<String> getCountryFromNetwork() {
         return getResultFromNetwork()
                 .concatMap((Function<Result, Observable<OmdbApi>>) result -> moviesApiInfoService.getOmdbApi(result.getTitle()))
-                .concatMap((Function<OmdbApi, Observable<String>>) omdbApi -> Observable.just(omdbApi.getCountry()))
+                .concatMap((Function<OmdbApi, Observable<String>>) omdbApi -> {
+                    if (omdbApi == null || omdbApi.getCountry() == null)
+                        return Observable.just("Desconocido");
+
+                    return Observable.just(omdbApi.getCountry());
+
+                })
                 .doOnNext(country -> lsCountries.add(country));
 
     }
