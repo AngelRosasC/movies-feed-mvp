@@ -2,12 +2,20 @@ package com.arcode.moviesfeed.movies;
 
 import com.arcode.moviesfeed.http.MoviesApiInfoService;
 import com.arcode.moviesfeed.http.MoviesApiService;
+import com.arcode.moviesfeed.http.apimodel.OmdbApi;
 import com.arcode.moviesfeed.http.apimodel.Result;
+import com.arcode.moviesfeed.http.apimodel.TopMoviesRated;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableSource;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Function;
 
 public class MoviesRepository implements Repository {
 
@@ -36,7 +44,14 @@ public class MoviesRepository implements Repository {
 
     @Override
     public Observable<Result> getResultFromNetwork() {
-        return null;
+        Observable<TopMoviesRated> topMoviesRatedObservable = moviesApiService.getTopMoviesRated(1)
+                .concatWith(moviesApiService.getTopMoviesRated(2))
+                .concatWith(moviesApiService.getTopMoviesRated(3));
+
+        return topMoviesRatedObservable
+                .concatMap((Function<TopMoviesRated, Observable<Result>>) topMoviesRated -> Observable.fromIterable(topMoviesRated.getResults()))
+                .doOnNext(result -> lsResults.add(result));
+
     }
 
     @Override
@@ -55,7 +70,11 @@ public class MoviesRepository implements Repository {
 
     @Override
     public Observable<String> getCountryFromNetwork() {
-        return null;
+        return getResultFromNetwork()
+                .concatMap((Function<Result, Observable<OmdbApi>>) result -> moviesApiInfoService.getOmdbApi(result.getTitle()))
+                .concatMap((Function<OmdbApi, Observable<String>>) omdbApi -> Observable.just(omdbApi.getCountry()))
+                .doOnNext(country -> lsCountries.add(country));
+
     }
 
     @Override
