@@ -2,6 +2,10 @@ package com.arcode.moviesfeed.root;
 
 import android.app.Application;
 
+import com.arcode.moviesfeed.http.MoviesCountryModule;
+import com.arcode.moviesfeed.http.MoviesTitleModule;
+import com.arcode.moviesfeed.movies.MoviesModule;
+
 public class App extends Application {
 
     private ApplicationComponent component;
@@ -12,6 +16,9 @@ public class App extends Application {
 
         component = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
+                .moviesModule(new MoviesModule())
+                .moviesTitleModule(new MoviesTitleModule())
+                .moviesCountryModule(new MoviesCountryModule())
                 .build();
     }
 

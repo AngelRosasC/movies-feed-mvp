@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements MoviesMVP.View {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.rxJavaUnsuscribe();
+        presenter.rxJavaUnsubscribe();
         resultList.clear();
         movieAdapter.notifyDataSetChanged();
     }
